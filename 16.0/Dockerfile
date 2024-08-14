@@ -69,13 +69,18 @@ RUN npm install -g rtlcss
 
 # Install Odoo
 ENV ODOO_VERSION 16.0
-ARG ODOO_RELEASE=20240812
-ARG ODOO_SHA=4dd27a13b50e32011048d75444bc31a022c67618
-RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
-    && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
-    && apt-get update \
-    && apt-get -y install --no-install-recommends ./odoo.deb \
-    && rm -rf /var/lib/apt/lists/* odoo.deb
+# ARG ODOO_RELEASE=20240812
+# ARG ODOO_SHA=4dd27a13b50e32011048d75444bc31a022c67618
+# RUN curl -o odoo16.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
+#     && echo "${ODOO_SHA} odoo16.deb" | sha1sum -c - \
+#     && apt-get update \
+#     && apt-get -y install --no-install-recommends ./odoo16.deb \
+#     && rm -rf /var/lib/apt/lists/* odoo16.deb
+
+COPY ./odoo16.deb /
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends /odoo16.deb \
+    && rm /odoo16.deb
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
