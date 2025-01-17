@@ -20,6 +20,7 @@ RUN apt-get update && \
         libssl-dev \
         node-less \
         npm \
+        python3-josepy \
         python3-magic \
         python3-num2words \
         python3-odf \
@@ -49,7 +50,7 @@ RUN apt-get update && \
     && echo ${WKHTMLTOPDF_SHA} wkhtmltox.deb | sha1sum -c - \
     && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
-    && pip install openupgradelib lxml_html_clean
+    && pip install openupgradelib lxml_html_clean josepy
 
 # install latest postgresql-client
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
