@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:noble
 MAINTAINER Odoo S.A. <info@odoo.com>
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
@@ -22,6 +22,7 @@ RUN apt-get update && \
         libssl-dev \
         node-less \
         npm \
+	python3-jose \
         python3-magic \
         python3-num2words \
         python3-odf \
@@ -51,10 +52,10 @@ RUN apt-get update && \
     && echo ${WKHTMLTOPDF_SHA} wkhtmltox.deb | sha1sum -c - \
     && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
-    && pip install openupgradelib lxml_html_clean josepy
+    && pip install openupgradelib lxml_html_clean python-jose --break-system-packages
 
 # install latest postgresql-client
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ noble-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
     && GNUPGHOME="$(mktemp -d)" \
     && export GNUPGHOME \
     && repokey='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8' \
@@ -71,7 +72,7 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main' > /etc/a
 RUN npm install -g rtlcss
 
 # Install Odoo
-ENV ODOO_VERSION 17.0
+ENV ODOO_VERSION 18.0
 # ARG ODOO_RELEASE=20240812
 # ARG ODOO_SHA=f42fe6e80daa50d3198987e9d76373cfa6e4396c
 # RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
@@ -80,10 +81,10 @@ ENV ODOO_VERSION 17.0
 #     && apt-get -y install --no-install-recommends ./odoo.deb \
 #     && rm -rf /var/lib/apt/lists/* odoo.deb
 
-COPY ./odoo17.deb /
+COPY ./odoo18.deb /
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends /odoo17.deb \
-    && rm /odoo17.deb
+    && apt-get -y install --no-install-recommends /odoo18.deb \
+    && rm /odoo18.deb
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
